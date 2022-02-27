@@ -1,37 +1,45 @@
-import React from 'react';
-import { useSettingsButton, useCloudStorage, ViewPicker, FieldPicker } from '@vikadata/widget-sdk';
-import { Box } from '@vikadata/components'
+import React, { useContext, useState } from 'react';
+import { useSettingsButton, useCloudStorage, ViewPicker } from '@vikadata/widget-sdk';
+import { Box, TextInput, Button } from '@vikadata/components'
+import { MapCenter } from './map'
 
 export const Setting: React.FC = () => {
   const [isSettingOpened] = useSettingsButton();
   const [viewId, setViewId] = useCloudStorage<string>('selectedViewId');
 
-  const [duration, setDuration] = useCloudStorage<string>('selectedDuration');
+  // const [mapCenter, setMapcenter] = useCloudStorage<string>('mapCenter', '深圳市');
+  
+  const { mapCenter, dispatch } = useContext(MapCenter)
 
-  const [startTime, setStartTime] = useCloudStorage<string>('selectedStartTime');
+  const [inputCenter, setInputcenter] = useState<string>(mapCenter)
 
-  const [collaborator, setCollaborator] = useCloudStorage<string>('selectedCollaborator');
+  function confirmCenter() {
+    dispatch({ type: 'change',  value: inputCenter });
+  }
 
   return isSettingOpened ? (
-    <div style={{ flexShrink: 0, width: '300px', borderLeft: 'solid 1px gainsboro', paddingLeft: '16px' }}>
-      <h1>设置</h1>
+    <div style={{ flexShrink: 0, width: '300px', borderLeft: 'solid 1px gainsboro'}}>
+      <h1 style={{ paddingLeft: "5px", marginBottom: 0 }}>设置</h1>
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ flexGrow: 1, overflow: 'auto'}}>
         <Box
-          padding={'16px 10px 10px'}
-          borderBottom='2px solid rgba(0, 0, 0, 0.1)'
+          padding="16px 47px 10px 10px"
+          borderBottom="2px solid lightgrey"
         >
-          <FormItem label="View">
-            <ViewPicker viewId={viewId} onChange={option => setViewId(option.value)} />
+          <FormItem label="View" >
+            <ViewPicker   viewId={viewId} onChange={option => setViewId(option.value)} />
           </FormItem>
-          <FormItem label="持续时间">
-            <FieldPicker viewId={viewId} fieldId={duration} onChange={option => setDuration(option.value)} />
-          </FormItem>
-          <FormItem label="开始时间">
-            <FieldPicker viewId={viewId} fieldId={startTime} onChange={option => setStartTime(option.value)} />
-          </FormItem>
-          <FormItem label="合作者">
-            <FieldPicker viewId={viewId} fieldId={collaborator} onChange={option => setCollaborator(option.value)} />
+        </Box>
+        <Box
+           padding="16px 34px 10px 10px"
+           display="flex"
+           alignItems="center"
+        >
+          <FormItem label="地图中心">
+            <TextInput  style={{  flex: 1}} size="small" value={inputCenter} onChange={ e => setInputcenter(e.target.value)} />
+            <Button  style={{ marginTop: 8}} color="primary" size="small" onClick={confirmCenter}>
+              确定
+            </Button>
           </FormItem>
         </Box>
         </div>
