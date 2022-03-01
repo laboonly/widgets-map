@@ -95,7 +95,6 @@ export default class APILoader {
         mainPromise = mainPromise || this.getMainPromise();
         // 判断是否加载ui组件
         if(useAmapUI) {
-            console.log('加载UI组件');
             amapuiPromise = amapuiPromise || this.getAmapuiPromise();
         }
         return new Promise(resolve => {

@@ -3,6 +3,7 @@
     position: absolute;
     width: 200px;
     height: 500px;
+    background: #f5f7fa;
 }
 
 .information {
@@ -16,7 +17,6 @@
     min-height: 100px;
     padding: 16px;
     background: #f5f7fa;
-    visibility: hidden;
     width: 200px;
     height: 500px;
 }

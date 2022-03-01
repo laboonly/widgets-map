@@ -1,20 +1,18 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useSettingsButton, useCloudStorage, ViewPicker } from '@vikadata/widget-sdk';
 import { Box, TextInput, Button } from '@vikadata/components'
-import { MapCenter } from './map'
+
 
 export const Setting: React.FC = () => {
   const [isSettingOpened] = useSettingsButton();
   const [viewId, setViewId] = useCloudStorage<string>('selectedViewId');
 
-  // const [mapCenter, setMapcenter] = useCloudStorage<string>('mapCenter', '深圳市');
+  const [mapCenter, setMapcenter] = useCloudStorage<string>('mapCenter', '深圳市');
   
-  const { mapCenter, dispatch } = useContext(MapCenter)
-
-  const [inputCenter, setInputcenter] = useState<string>(mapCenter)
+  const [inputCenter, setInputcenter] = useState<string>(mapCenter);
 
   function confirmCenter() {
-    dispatch({ type: 'change',  value: inputCenter });
+    setMapcenter(inputCenter);
   }
 
   return isSettingOpened ? (
