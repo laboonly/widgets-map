@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const Information = React.forwardRef(({ title, address, info, price, contact} : Props , ref: any) => {
-
+	 
 	return (
 		<div className={style.information} ref={ref} >
 			<h2 className={style.header}>{ title }</h2>

@@ -54,7 +54,7 @@ function getLocationAsync(record: any) {
 // 创建路劲规划
 async function creatTransfer(pointA, pointB) {
   return new Promise<void>(resolve => {
-    window.Transfer({autoFitView: false}).search(pointA, pointB, function(status, result) {
+    window.Transfer.search(pointA, pointB, function(status, result) {
         if (status === 'complete') {
             console.log(result);
             resolve()

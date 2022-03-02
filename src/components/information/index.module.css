@@ -1,52 +1,53 @@
 
 .informationContent {
-    position: absolute;
-    width: 200px;
-    height: 500px;
-    background: #f5f7fa;
+	position: absolute;
+	width: 200px;
+	height: 500px;
+	background: #f5f7fa;
 }
 
 .information {
-    z-index: 9999;
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-radius: 4px;
-    border: 1px solid rgb(246, 246, 246);
-    box-shadow: rgb(0 0 0 / 13%) 0px 2px 4px;
-    min-height: 100px;
-    padding: 16px;
-    background: #f5f7fa;
-    width: 200px;
-    height: 500px;
+	z-index: 9999;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border-radius: 4px;
+	border: 1px solid rgb(246, 246, 246);
+	box-shadow: rgb(0 0 0 / 13%) 0px 2px 4px;
+	min-height: 100px;
+	padding: 16px;
+	background: #f5f7fa;
+	width: 200px;
+	height: 500px;
+	visibility: hidden;
 }
 
 .informationS {
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 10px 10px 0 10px;
-    border-color: #f5f7fa transparent transparent transparent;
-    position: absolute;
-    bottom: -10px;
-    left: calc(50% - 5px);
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 10px 10px 0 10px;
+	border-color: #f5f7fa transparent transparent transparent;
+	position: absolute;
+	bottom: -10px;
+	left: calc(50% - 5px);
 }
 
 .header {
-    text-align: center;
-    margin: 10px 10px;
+	text-align: center;
+	margin: 10px 10px;
 }
 
 .list {
-    padding-left: 10px;
+	padding-left: 10px;
 }
 
 .list li {
-    list-style-type: none;
+	list-style-type: none;
 }
 
 .commute {
-    margin-top: 10px;
-    height: 300px;
-    overflow-y: scroll;
+	margin-top: 10px;
+	height: 300px;
+	overflow-y: scroll;
 }

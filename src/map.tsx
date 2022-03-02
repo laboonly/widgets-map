@@ -6,12 +6,12 @@ import { loadGeocoder, loadTransfer, loadAmapUI } from './utils/common';
 
 declare global {
   interface Window { 
-    AMap: any; 
-    AMapUI: any;  
-    SimpleMarker: any;
-    Geocoder: any;
-    Transfer: any;
-    amap: any;
+    AMap: any, // 地图API
+    AMapUI: any, // 高德地图UI
+    SimpleMarker: any, // 标点UI
+    Geocoder: any, // 地图转码
+    Transfer: any, // 路线规划
+    amap: any, // 地图实例
   }
 }
 
