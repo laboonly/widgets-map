@@ -15,9 +15,14 @@ declare global {
   }
 }
 
+// 地图安全密钥
+const securityCode = '41d2e666297c21beda8897b2dfecc92f';
+// 高德地图api key
+const apiKey = '5b625cd96fdd79c2918cf5ec2cd7720c';
+
 //设置地图安全密钥
 window['_AMapSecurityConfig'] = {
-  securityJsCode:'41d2e666297c21beda8897b2dfecc92f',
+  securityJsCode: securityCode,
 }
 
 export const MapComponent: React.FC = () => {
@@ -28,7 +33,7 @@ export const MapComponent: React.FC = () => {
   useEffect(() => {
    
     new APILoader({
-        key: '5b625cd96fdd79c2918cf5ec2cd7720c',
+        key: apiKey,
         version: null,
         protocol: 'https'
     }).load().then(() => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCloudStorage, useRecords } from '@vikadata/widget-sdk';
-import { Information } from '../information'
+import { Information } from '../information';
 import { getLocationAsync, creatTransfer } from '../../utils/common';
 
 interface mapContentProps {

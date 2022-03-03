@@ -4,7 +4,7 @@
 const DEFAULT_CONFIG = {
     v: '1.4.0', // 版本号
     hostAndPath: 'webapi.amap.com/maps', // 高德api加载地址
-    key: '5b625cd96fdd79c2918cf5ec2cd7720c', // 高德apikey
+    key: '', // 高德apikey
     callback: '_amap_init_callback', // 回调函数
     useAmapUI: true // 是否使用高德UI
 }
