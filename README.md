@@ -148,7 +148,7 @@ function loadGeocoder() {
 
 ```
 
-由于这些插件以及高德地图api的加载是异步的所以我们将这些功能与地图上的功能分开,将之前的地图挂载元素分成mapcontent的小组件，在src中创建components/mapcontent,并且根据维格小程序官方api修改src/seting.tsx. 然后使用useCloudStorage来获取用户设置名称地址等，对应的列的id。然后使用record.getCellValue来获取对应的值。
+由于这些插件以及高德地图api的加载是异步的所以我们将这些功能与地图上的功能分开,将之前的地图挂载元素分成mapcontent的小组件，在src中创建components/mapcontent,并且根据维格小程序官方api修改src/seting.tsx. 然后使用useCloudStorage来获取用户设置名称地址等，对应的列的id。然后使用record.getCellValue来获取对应的值。接下来根据这个值通过上面提得到geocoder插件根据地址查询对应点的坐标值，最后使用[高德AMapUI](https://lbs.amap.com/api/amap-ui/reference-amap-ui/overlay/simplemarker)创建对应地址的标点。
 
 mapcontent/index.tsx
 
@@ -342,3 +342,8 @@ export const Setting: React.FC = () => {
 
 到这里我们基本上完成了从表格中获取值然后在地图上实现标点等功能，后续的详细信息展示以及路线规划也可以使用
 相应的插件完成。我已经将源码上传至https://github.com/laboonly/widgets-rent-map 欢迎Star⭐️.
+
+## 后续计划
+
+1. 将此小程序变得更加有拓展性。让用户可以自由选择标点详细信息展示等功能
+2. 添加更多地图功能
