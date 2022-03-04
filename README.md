@@ -59,7 +59,7 @@ https://github.com/laboonly/widgets-rent-map
 ```
 接下来我们在小程序工程src中创建map.tsx文件，引入APILoader，并且创建MapComponent函数组件。填入地图配置参数，这里要注意地图挂载的DOM要设置宽高.
 
-```
+```tsx
 import React, { useEffect, useState } from ‘react’;
 import { Setting } from ‘./setting’;
 import APILoader from ‘./utils/APILoader’;
@@ -107,7 +107,7 @@ export const MapComponent: React.FC = () => {
 
 修改小程序index.tsx的默认代码.
 
-```
+```tsx
 import { initializeWidget } from '@vikadata/widget-sdk';
 import { MapComponent } from './map';
 
@@ -122,7 +122,7 @@ initializeWidget(MapComponent, process.env.WIDGET_PACKAGE_ID!);
 
 这里我们需要使用到两个插件，地图编码插件[geocoder](https://lbs.amap.com/api/javascript-api/guide/services/geocoder),[高德官方UI库](https://lbs.amap.com/api/amap-ui/intro)，在utils下面新建commons.js。实现加载插件代码。同样思路的还有后续的路线规划插件加载。
 
-```
+```tsx
 
 // 加载高德地图地图插件
 function loadAmapUI() {
@@ -152,7 +152,7 @@ function loadGeocoder() {
 
 mapcontent/index.tsx
 
-```
+```tsx
 // 以下是部分代码完整源码请在github查看
 
 import React, { useState, useEffect } from 'react';
@@ -280,7 +280,7 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
 
 另外我们需要在setting.tsx里面设置名称，地址等信心对应的列。通过useCloudStorage保存。使用小程序官方的FieldPicker组件选择对应的字段获取ID。
 
-```
+```tsx
 // 以下是部分代码完整源码请在github查看
 
 export const Setting: React.FC = () => {
@@ -345,5 +345,5 @@ export const Setting: React.FC = () => {
 
 ## 后续计划
 
-1. 将此小程序变得更加有拓展性。让用户可以自由选择标点详细信息展示等功能
-2. 添加更多地图功能
+1. 将标点,信息展示，路线规划变为组件由用户自己选择展示。
+2. 添加更多地图功能，如范围点等。
