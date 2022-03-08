@@ -135,7 +135,7 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     informationRef?: any,
   ) {
 
-    const marker =  new window.SimpleMarker({
+    const marker =  new window.AMapUI.SimpleMarker({
       ...markerConfig,
       //...其他Marker选项...，不包括content
       map: window.amap,
@@ -152,7 +152,7 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
             closeWhenClickMap: true, // 点击地图关闭
             autoMove: true
         });
-        creatTransfer([mapCenterLocation.lng, mapCenterLocation.lat], [record.location.lng, record.location.lat]);
+        creatTransfer([record.location.lng, record.location.lat], [mapCenterLocation.lng, mapCenterLocation.lat]);
         infoWindow.open(window.amap, [record.location.lng, record.location.lat]);
       });
     }

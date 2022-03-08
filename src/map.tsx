@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Setting } from './setting';
 import { MapContent } from './components/mapcontent';
-import APILoader from './utils/APILoader';
-import { loadGeocoder, loadTransfer, loadAmapUI } from './utils/common';
+import AMapLoader from '@amap/amap-jsapi-loader';
+
 
 declare global {
   interface Window { 
@@ -29,29 +29,35 @@ export const MapComponent: React.FC = () => {
   // 插件加载状态
   const [pluginStatus, setPluginstatus] = useState(false);
 
+  function initMap() {
+    const lnglat = new window.AMap.LngLat(114.031040, 22.624386);
+    const amap = new window.AMap.Map('container', {
+      zoom: 12,//级别
+      center: lnglat,//中心点坐标
+      viewMode: '2D',//使用3D视图
+      mapStyle: 'amap://styles/b379277160c9c3ce520627ad2e4bd22c'
+    });
+    window.amap = amap;
+  }
+
   // 组件初始化时，加载 sdk 地图实例
   useEffect(() => {
-   
-    new APILoader({
-        key: apiKey,
-        version: null,
-        protocol: 'https'
-    }).load().then(() => {
-      const lnglat = new window.AMap.LngLat(114.031040, 22.624386);
-      const amap = new window.AMap.Map('container', {
-        zoom: 12,//级别
-        center: lnglat,//中心点坐标
-        viewMode: '3D',//使用3D视图
-        mapStyle: 'amap://styles/b379277160c9c3ce520627ad2e4bd22c'
-      });
-      window.amap = amap;
-
-      Promise.all([loadGeocoder(), loadAmapUI(), loadTransfer(amap)]).then(res => {
-        window.Geocoder = res[0];
-        window.SimpleMarker = res[1];
-        window.Transfer = res[2];
-        setPluginstatus(true);
-      });
+    if(window.AMap) {
+      setPluginstatus(true);
+      initMap();
+      return;
+    }
+    AMapLoader.load({
+      "key": apiKey,
+      "version": "2.0",
+      "plugins":['AMap.Geocoder', "AMap.Transfer"],
+      "AMapUI": {             // 是否加载 AMapUI，缺省不加载
+          "version": '1.1',   // AMapUI 版本
+          "plugins":['overlay/SimpleMarker'],       // 需要加载的 AMapUI ui插件
+      },
+    }).then(() => {
+      initMap();
+      setPluginstatus(true);
     });
    
   }, []);

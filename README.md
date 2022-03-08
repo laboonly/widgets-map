@@ -30,7 +30,8 @@ https://github.com/laboonly/widgets-rent-map
 高德JSAPI，更新了V2.0版本，一番尝试之后发现总是没办法加载成功，在咨询了维格的研发同学之后，才知道可能是因为维格对iframe支持有问题，于是决定不适用新版本的api使用之前V.14版本的api。
 
 但是v.14版本的api加载不支持npm，于是我借鉴了之前使用此版本api的react-amap开源框架，关于地图加载的部分。[源码链接](https://github.com/ElemeFE/react-amap/blob/next/components/utils/APILoader.js)，大概思路就是用JS创建script标签加载。首先在小程序的框架下创建utils/ApiLoader.js文件。复制上面链接中的代码。这里的地图mapStyle我使用了[高德的自定义主题](https://lbs.amap.com/api/javascript-api/guide/map/map-style)，你可以选择你喜欢的地图主题，或者自己配置.
-```
+
+```tsx
 // 部分代码
 
   const DEFAULT_CONFIG = {
