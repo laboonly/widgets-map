@@ -21,7 +21,7 @@ export const Information = React.forwardRef(({ title, address, info, price, cont
 				<li>优缺点: { info }</li>
 				<li>价格: ￥{ price }</li>
 				<li>联系方式: { contact }</li>
-				<li id="commute" className={style.commute}></li>
+				<li id="commute"  className={style.commuteC}></li>
 			</ul>
 		</div>
 	);

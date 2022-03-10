@@ -116,9 +116,16 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
   // 根据表格设置所有地图点
   useEffect(function drawAddress() {
     console.log('pluginStatus', pluginStatus);
-    if (!pluginStatus || !recordsData  || !mapCenterLocation) {
+    if (!pluginStatus || !recordsData  || !mapCenterLocation ) {
       return;
     }
+    const infoWindow = new window.AMap.InfoWindow({
+        content: '',  //传入 dom 对象，或者 html 字符串
+        offset: new window.AMap.Pixel(0, -40),
+        closeWhenClickMap: true, // 点击地图关闭
+        autoMove: true
+    });
+    window.infoWindow = infoWindow
     markAddress(recordsData, markersLayer, mapCenterLocation, informationRef);
   }, [recordsData, mapCenterLocation, pluginStatus]);
 
@@ -132,7 +139,7 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     record: any, 
     markerConfig: markConfig,
     mapCenterLocation?: locationType,
-    informationRef?: any,
+    informationRef?: any
   ) {
 
     const marker =  new window.AMapUI.SimpleMarker({
@@ -146,14 +153,9 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     if(mapCenterLocation) {
       marker.on('click', () => {
         setHouseinfo(record);
-        const infoWindow = new window.AMap.InfoWindow({
-            content: informationRef.current.innerHTML,  //传入 dom 对象，或者 html 字符串
-            offset: new window.AMap.Pixel(0, -40),
-            closeWhenClickMap: true, // 点击地图关闭
-            autoMove: true
-        });
+        window.infoWindow.setContent(informationRef.current.innerHTML);
         creatTransfer([record.location.lng, record.location.lat], [mapCenterLocation.lng, mapCenterLocation.lat]);
-        infoWindow.open(window.amap, [record.location.lng, record.location.lat]);
+        window.infoWindow.open(window.amap, [record.location.lng, record.location.lat]);
       });
     }
     return marker;
@@ -170,7 +172,7 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     recordsData: Array<any>, 
     markersLayer: Array<any>, 
     mapCenterLocation: locationType,
-    informationRef: any,
+    informationRef: any
   ) {
 
     if(markersLayer) {

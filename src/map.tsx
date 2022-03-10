@@ -12,6 +12,7 @@ declare global {
     Geocoder: any, // 地图转码
     Transfer: any, // 路线规划
     amap: any, // 地图实例
+    infoWindow: any, // 信息弹窗实例
   }
 }
 
@@ -38,6 +39,18 @@ export const MapComponent: React.FC = () => {
       mapStyle: 'amap://styles/b379277160c9c3ce520627ad2e4bd22c'
     });
     window.amap = amap;
+    window.Transfer = new window.AMap.Transfer({
+      // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
+      city: '深圳',
+      map: amap,
+      hideMarkers: true,
+      extensions: 'all',
+      policy: 'LEAST_TIME',
+      panel: 'commute'
+    });
+    window.Geocoder = new window.AMap.Geocoder({
+      city: '全国'
+    });
   }
 
   // 组件初始化时，加载 sdk 地图实例

@@ -1,14 +1,14 @@
 
 .informationContent {
 	position: absolute;
-	width: 200px;
-	height: 500px;
+	/* width: 200px;
+	height: 500px; */
 	background: #f5f7fa;
 }
 
 .information {
 	z-index: 9999;
-	position: absolute;
+	position: relative;
 	top: 0;
 	left: 0;
 	border-radius: 4px;
@@ -16,10 +16,10 @@
 	box-shadow: rgb(0 0 0 / 13%) 0px 2px 4px;
 	min-height: 100px;
 	padding: 16px;
-	background: #f5f7fa;
+	/* background: #f5f7fa; */
 	width: 200px;
 	height: 500px;
-	visibility: hidden;
+	/* visibility: hidden; */
 }
 
 .informationS {
@@ -46,7 +46,7 @@
 	list-style-type: none;
 }
 
-.commute {
+.commuteC {
 	margin-top: 10px;
 	height: 300px;
 	overflow-y: scroll;
