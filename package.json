@@ -31,6 +31,7 @@
     "@vikadata/components": "^0.0.3",
     "@vikadata/icons": "^0.0.1",
     "@vikadata/widget-sdk": "^0.0.2",
+    "ahooks": "^3.1.13",
     "react-amap": "^1.2.8",
     "typescript": "4.1.2"
   },

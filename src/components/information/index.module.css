@@ -1,11 +1,4 @@
 
-.informationContent {
-	position: absolute;
-	/* width: 200px;
-	height: 500px; */
-	background: #f5f7fa;
-}
-
 .information {
 	z-index: 9999;
 	position: relative;
@@ -18,8 +11,8 @@
 	padding: 16px;
 	/* background: #f5f7fa; */
 	width: 200px;
-	height: 500px;
-	/* visibility: hidden; */
+	/* height: 500px; */
+	display: none;
 }
 
 .informationS {
@@ -48,6 +41,6 @@
 
 .commuteC {
 	margin-top: 10px;
-	height: 300px;
+	/* height: 300px; */
 	overflow-y: scroll;
 }

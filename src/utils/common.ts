@@ -2,7 +2,7 @@
 // 根据地址获取去高德地图定位点
 function getLocationAsync(record: any) {
   return new Promise((resolve, reject) => {
-    window.Geocoder.getLocation(record.address, function(status, result) {
+    window.Geocoder.getLocation(record['地址'], function(status, result) {
       if (status === 'complete' && result.info === 'OK') {
         const { lng, lat} = result.geocodes[0].location;
         resolve({ ...record, location: { lng, lat}});

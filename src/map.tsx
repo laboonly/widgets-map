@@ -38,6 +38,9 @@ export const MapComponent: React.FC = () => {
       viewMode: '2D',//使用3D视图
       mapStyle: 'amap://styles/b379277160c9c3ce520627ad2e4bd22c'
     });
+    // amap.addControl(new window.AMap.ToolBar());
+    // 在图面添加鹰眼控件，在地图右下角显示地图的缩略图
+    amap.addControl(new window.AMap.HawkEye({isOpen:true}));
     window.amap = amap;
     window.Transfer = new window.AMap.Transfer({
       // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
@@ -63,7 +66,7 @@ export const MapComponent: React.FC = () => {
     AMapLoader.load({
       "key": apiKey,
       "version": "2.0",
-      "plugins":['AMap.Geocoder', "AMap.Transfer"],
+      "plugins":['AMap.Geocoder', "AMap.Transfer", "AMap.ToolBar", "AMap.HawkEye"],
       "AMapUI": {             // 是否加载 AMapUI，缺省不加载
           "version": '1.1',   // AMapUI 版本
           "plugins":['overlay/SimpleMarker'],       // 需要加载的 AMapUI ui插件

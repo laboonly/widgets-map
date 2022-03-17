@@ -38,6 +38,11 @@ const homeMarkerConfig = {
   iconTheme: 'fresh'
 }
 
+interface InfolistType{
+  text: string,
+  value: string,
+}
+
 
 export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
   // 获取表格视图ID
@@ -46,16 +51,10 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
   const records = useRecords(viewId);
   // 处理完的表格信息
   const [recordsData, setRecordsdata] = useState<any>();
-  // 名称
-  const [titleId] = useCloudStorage<string>('selectedtitleId');
-  // 地址
-  const [addressId] = useCloudStorage<string>('selectedAddressId');
-  // 优缺点
-  const [houseInfoId] = useCloudStorage<string>('selectedHouseInfoId');
-  // 价格
-  const [priceId] = useCloudStorage<string>('selectPrice');
-  // 联系方式
-  const [contactId] = useCloudStorage<string>('selectContact');
+
+  const [infoWindowList] = useCloudStorage<Array<InfolistType>>('infoWindowList');
+  const [infoWindowListStatus] = useCloudStorage<boolean>('infoWindowListStatus');
+
   // 地图中心地址
   const [mapCenter] = useCloudStorage<string>('mapCenter');
   // 地图中心定位
@@ -66,30 +65,35 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
   const [markersLayer, setMakerslayer] = useState<any>(null);
   // 信息窗口DOM引用
   const informationRef = React.useRef();
-  // 房子信息
-  const [houseInfo, setHouseinfo] = useState<houseType>({
-    title: '',
-    address: '',
-    info: '',
-    price: 1222,
-    contact: 1111,
-  });
+  // 点位信息
+  const [markInfo, setMarkInfo] = useState<any>();
 
   // 地址处理
   useEffect(function getAddressList() {
+    if(!infoWindowListStatus) {
+      return;
+    }
+    const infoListObj = infoWindowList.reduce((pre, current, index) => {
+      if(index === 1) {
+        const obj = {
+          [pre.text] : pre.value
+        }
+        pre = obj;
+      }
+      pre[current.text] = current.value
+      return pre;
+    });
     // 获取表格所有地址
     const recordsData: any[] = records
-      .map(record => { 
-        return { 
-          title: record.getCellValue(titleId),
-          address: record.getCellValue(addressId),
-          info: record.getCellValue(houseInfoId),
-          price: record.getCellValue(priceId),
-          contact: record.getCellValue(contactId)
+      .map(record => {
+        let resObj = {}
+        for(let key in infoListObj) {
+          resObj[key] = record.getCellValue(infoListObj[key]);
         }
+        return resObj;
       });
     setRecordsdata(recordsData);
-  },[records, titleId, addressId, houseInfoId, priceId, contactId]);
+  },[records, infoWindowListStatus, infoWindowList]);
 
   // 创建中心点坐标
   useEffect(function setCenter(){
@@ -100,23 +104,19 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
       window.amap.remove(markerCenter);
     }
     getLocationAsync({ 
-      title: '',
-      address: mapCenter,
-      info: '',
-      price: '',
-      contact: ''
+      ['地址']: mapCenter,
     }).then((record: any )=> {
       window.amap.setCenter([record.location.lng, record.location.lat]);
       setMapCenterLocation(record.location);
       //创建中心点标点 并且设置
-      setMarkercenter(creatMarker(record, conterMarkerConfig));
+      // setMarkercenter(creatMarker(record, conterMarkerConfig));
     });   
   },[window.amap, mapCenter, pluginStatus]);
-
+ 
   // 根据表格设置所有地图点
   useEffect(function drawAddress() {
-    console.log('pluginStatus', pluginStatus);
-    if (!pluginStatus || !recordsData  || !mapCenterLocation ) {
+    console.log('infoWindowListStatus', infoWindowListStatus);
+    if (!pluginStatus || !recordsData  || !mapCenterLocation || !infoWindowListStatus) {
       return;
     }
     const infoWindow = new window.AMap.InfoWindow({
@@ -125,9 +125,9 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
         closeWhenClickMap: true, // 点击地图关闭
         autoMove: true
     });
-    window.infoWindow = infoWindow
+    window.infoWindow = infoWindow;
     markAddress(recordsData, markersLayer, mapCenterLocation, informationRef);
-  }, [recordsData, mapCenterLocation, pluginStatus]);
+  }, [recordsData, mapCenterLocation, pluginStatus, infoWindowListStatus]);
 
   /* 创建标记点 
   record: 标点信息
@@ -152,10 +152,12 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     
     if(mapCenterLocation) {
       marker.on('click', () => {
-        setHouseinfo(record);
+        setMarkInfo(record);
+        setTimeout(() => {
         window.infoWindow.setContent(informationRef.current.innerHTML);
-        creatTransfer([record.location.lng, record.location.lat], [mapCenterLocation.lng, mapCenterLocation.lat]);
+        // creatTransfer([record.location.lng, record.location.lat], [mapCenterLocation.lng, mapCenterLocation.lat]);
         window.infoWindow.open(window.amap, [record.location.lng, record.location.lat]);
+        });
       });
     }
     return marker;
@@ -178,7 +180,6 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     if(markersLayer) {
       window.amap.remove(markersLayer);
     }
-
     const asyncRecords = recordsData.map(record => getLocationAsync(record));
     const Records = await Promise.all(asyncRecords);
     const markers = Records.map((record: any) => { 
@@ -194,11 +195,7 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
       </div>
       <Information 
         ref={informationRef}
-        title={houseInfo.title}
-        address={houseInfo.address}
-        info={houseInfo.info}
-        price={houseInfo.price}
-        contact={houseInfo.contact}
+        info={markInfo}
       />
     </div>
   );
