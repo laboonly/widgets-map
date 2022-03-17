@@ -14,6 +14,10 @@ https://github.com/laboonly/widgets-rent-map
 ## 使用说明
 请先获取高德api的key[高德地图apikey获取](https://lbs.amap.com/api/javascript-api/guide/abc/prepare)，填入src/map.tsx的securityCode和apiKey，启动小程序之后选择，名称，地址，价格，联系方式对应表格的列，以及填入地图中心(公司)。
 
+## 最近更新
+ 1. 将标记点功能与其他功能分开
+ 2. 支持信息弹窗信息自定义
+
 下面分享一下开发过程
 
 ## 开发过程
