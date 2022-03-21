@@ -3,15 +3,15 @@
   "spaceId": "spcETbEk47JZh",
   "entry": "./src/index.tsx",
   "name": {
-    "zh-CN": "时间追踪",
-    "en-US": "时间追踪"
+    "zh-CN": "地图小程序",
+    "en-US": "map"
   },
   "icon": "./package_icon.png",
   "cover": "./cover.png",
   "authorIcon": "./author_icon.png",
   "description": {
-    "zh-CN": "时间追踪 的描述",
-    "en-US": "时间追踪 description"
+    "zh-CN": "根据定位在地图上显示标点，以及标点详细信息",
+    "en-US": "map"
   },
   "globalPackageId": "wpk2jJ7qZS0VG"
 }

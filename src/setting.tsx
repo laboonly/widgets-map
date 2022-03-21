@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { useSettingsButton, useCloudStorage, ViewPicker, FieldPicker, useFields } from '@vikadata/widget-sdk';
 import { Box, TextInput, Button } from '@vikadata/components';
-import { useDebounceFn  } from 'ahooks';
 import style from './setting.module.css';
 
 
@@ -26,7 +25,7 @@ export const Setting: React.FC = () => {
 
   const [infoWindowList, setInfoWindowList] = useCloudStorage<Array<InfolistType>>('infoWindowList', [{ text: '地址', value: ''}, { text: '名称', value: '' }]);
 
-  const [infoWindowListStatus, setInfoWindowListStatus] = useCloudStorage<boolean>('infoWindowListStatus', true);
+  const [infoWindowListStatus, setInfoWindowListStatus] = useCloudStorage<boolean>('infoWindowListStatus', false);
 
   const showAddbutton = useMemo(() => {
     return infoWindowList.length >= fields.length
@@ -64,14 +63,14 @@ export const Setting: React.FC = () => {
   function confirmInfoWindow() {
     setInfoWindowListStatus(true);
     infoWindowList.forEach(formItem => {
-      if(formItem.text === '' && formItem.value === '' ) {
+      if(formItem.text === '' || formItem.value === '' ) {
         setInfoWindowListStatus(false);
       }
     })
   }
 
   useEffect(() => {
-    confirmInfoWindow()
+    confirmInfoWindow();
   }, []);
 
   return isSettingOpened ? (
