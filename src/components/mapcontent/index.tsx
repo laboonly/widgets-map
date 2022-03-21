@@ -151,16 +151,16 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
       position: [record.location.lng, record.location.lat]
     });
     
-    if(mapCenterLocation) {
-      marker.on('click', () => {
-        setMarkInfo(record);
-        setTimeout(() => {
-        window.infoWindow.setContent(informationRef.current.innerHTML);
-        // creatTransfer([record.location.lng, record.location.lat], [mapCenterLocation.lng, mapCenterLocation.lat]);
-        window.infoWindow.open(window.amap, [record.location.lng, record.location.lat]);
-        });
+    
+    marker.on('click', () => {
+      setMarkInfo(record);
+      setTimeout(() => {
+      window.infoWindow.setContent(informationRef.current.innerHTML);
+      // creatTransfer([record.location.lng, record.location.lat], [mapCenterLocation.lng, mapCenterLocation.lat]);
+      window.infoWindow.open(window.amap, [record.location.lng, record.location.lat]);
       });
-    }
+    });
+    
     return marker;
   }
 
