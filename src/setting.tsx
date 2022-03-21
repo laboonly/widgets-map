@@ -69,9 +69,9 @@ export const Setting: React.FC = () => {
     })
   }
 
-  useEffect(() => {
-    confirmInfoWindow();
-  }, []);
+  // useEffect(() => {
+  //   confirmInfoWindow();
+  // }, []);
 
   return isSettingOpened ? (
     <div style={{ flexShrink: 0, width: '300px', borderLeft: 'solid 1px gainsboro'}}>

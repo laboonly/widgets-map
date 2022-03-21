@@ -70,6 +70,7 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
 
   // 地址处理
   useEffect(function getAddressList() {
+    console.log('infoWindowListStatus1', infoWindowListStatus);
     if(!infoWindowListStatus) {
       return;
     }
@@ -115,10 +116,11 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
  
   // 根据表格设置所有地图点
   useEffect(function drawAddress() {
-    console.log('infoWindowListStatus', infoWindowListStatus);
-    if (!pluginStatus || !recordsData  || !mapCenterLocation || !infoWindowListStatus) {
+    console.log('infoWindowListStatus', infoWindowListStatus, pluginStatus, recordsData, mapCenterLocation);
+    if (!pluginStatus || !recordsData  || !infoWindowListStatus) {
       return;
     }
+    console.log('设置');
     const infoWindow = new window.AMap.InfoWindow({
         content: '',  //传入 dom 对象，或者 html 字符串
         offset: new window.AMap.Pixel(0, -40),
@@ -126,8 +128,8 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
         autoMove: true
     });
     window.infoWindow = infoWindow;
-    markAddress(recordsData, markersLayer, mapCenterLocation, informationRef);
-  }, [recordsData, mapCenterLocation, pluginStatus, infoWindowListStatus]);
+    markAddress(recordsData, markersLayer, informationRef);
+  }, [recordsData, pluginStatus, infoWindowListStatus]);
 
   /* 创建标记点 
   record: 标点信息
@@ -138,7 +140,6 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
   function creatMarker(
     record: any, 
     markerConfig: markConfig,
-    mapCenterLocation?: locationType,
     informationRef?: any
   ) {
 
@@ -173,7 +174,6 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
   async function markAddress( 
     recordsData: Array<any>, 
     markersLayer: Array<any>, 
-    mapCenterLocation: locationType,
     informationRef: any
   ) {
 
@@ -183,7 +183,7 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     const asyncRecords = recordsData.map(record => getLocationAsync(record));
     const Records = await Promise.all(asyncRecords);
     const markers = Records.map((record: any) => { 
-      return creatMarker(record, homeMarkerConfig, mapCenterLocation, informationRef);
+      return creatMarker(record, homeMarkerConfig, informationRef);
     });
 
     setMakerslayer(markers);
