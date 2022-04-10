@@ -70,7 +70,7 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
 
   // 地址处理
   useEffect(function getAddressList() {
-    console.log('infoWindowListStatus1', infoWindowListStatus);
+    console.log('infoWindowListStatus1', infoWindowListStatus, infoWindowList);
     if(!infoWindowListStatus) {
       return;
     }
@@ -142,7 +142,10 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     markerConfig: markConfig,
     informationRef?: any
   ) {
-
+    console.log('设置标点');
+    if(!record.location) {
+      return;
+    }
     const marker =  new window.AMapUI.SimpleMarker({
       ...markerConfig,
       //...其他Marker选项...，不包括content
@@ -176,16 +179,17 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     markersLayer: Array<any>, 
     informationRef: any
   ) {
-
+    console.log('markAddress执行');
     if(markersLayer) {
       window.amap.remove(markersLayer);
     }
+    
     const asyncRecords = recordsData.map(record => getLocationAsync(record));
     const Records = await Promise.all(asyncRecords);
     const markers = Records.map((record: any) => { 
       return creatMarker(record, homeMarkerConfig, informationRef);
     });
-
+    console.log('markers标点');
     setMakerslayer(markers);
   }
 

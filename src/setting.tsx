@@ -61,12 +61,14 @@ export const Setting: React.FC = () => {
   
 
   function confirmInfoWindow() {
-    setInfoWindowListStatus(true);
+    setInfoWindowListStatus(false);
+    let check = true;
     infoWindowList.forEach(formItem => {
       if(formItem.text === '' || formItem.value === '' ) {
-        setInfoWindowListStatus(false);
+        check = false;
       }
-    })
+    });
+    setInfoWindowListStatus(check);
   }
 
   // useEffect(() => {
