@@ -2,17 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useCloudStorage, useRecords } from '@vikadata/widget-sdk';
 import { Information } from '../information';
 import { getLocationAsync, creatTransfer } from '../../utils/common';
+import { useDebounce, useMount } from 'ahooks';
+import { TextInput } from '@vikadata/components';
+import style from './index.module.css';
+
 
 interface mapContentProps {
   pluginStatus: boolean
-}
-
-interface houseType {
-  title: string, // 名称
-	address: string, // 地址
-	info: string, // 出租房信息
-	price: number, // 价格
-	contact: number, // 联系方式
 }
 
 interface markConfig {
@@ -27,13 +23,13 @@ interface locationType{
 }
 
 const conterMarkerConfig = {
-  iconLabel: 'C',
+  iconLabel: '',
   iconStyle: 'orange',
   iconTheme: 'fresh'
 }
 
 const homeMarkerConfig = {
-  iconLabel: 'H',
+  iconLabel: '',
   iconStyle: 'lightgreen',
   iconTheme: 'fresh'
 }
@@ -60,17 +56,56 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
   // 地图中心定位
   const [mapCenterLocation, setMapCenterLocation] = useState<locationType>();
   // 中心标点
-  const [markerCenter, setMarkercenter] = useState<any>();
+  const [markerCenterLayer, setMarkerCenterLayer] = useState<any>();
   // 地图标点集合
   const [markersLayer, setMakerslayer] = useState<any>(null);
   // 信息窗口DOM引用
   const informationRef = React.useRef();
   // 点位信息
   const [markInfo, setMarkInfo] = useState<any>();
+  // 搜索输入
+  const [searchKey, setSearchKey] = useState<string>();
+  const debouncedSearchKey = useDebounce(searchKey, { wait: 500 });
+
+  // 搜索处理
+  // useEffect(() => {
+    
+  //   // 根据关键字进行搜索
+  //   window.AutoComplete.search(debouncedSearchKey, function(status, result) {
+  //     // 搜索成功时，result即是对应的匹配数据
+  //     console.log('result', result);
+  //   });
+    
+  // }, [debouncedSearchKey]);
+
+  useEffect(() => {
+    if(!window.AutoComplete) {
+      return;
+    }
+    window.AutoComplete.clearEvents("select");
+    window.AutoComplete.on("select", select);
+  }, [window.AutoComplete, window.amap, debouncedSearchKey]);
+
+  function select(e) {
+      setSearchKey(e.poi.name);
+      //创建标点 并且设置为地图中心
+      
+      if(markerCenterLayer) {
+        window.amap.remove(markerCenterLayer);
+      } 
+      const centerMarker = new window.AMapUI.SimpleMarker({
+        ...conterMarkerConfig,
+        //...其他Marker选项...，不包括content
+        map: window.amap,
+        clickable: true,
+        position: [e.poi.location.lng, e.poi.location.lat]
+      });
+      setMarkerCenterLayer(centerMarker);
+      window.amap.setCenter([ e.poi.location.lng, e.poi.location.lat]);
+  };
 
   // 地址处理
   useEffect(function getAddressList() {
-    console.log('infoWindowListStatus1', infoWindowListStatus, infoWindowList);
     if(!infoWindowListStatus) {
       return;
     }
@@ -101,8 +136,8 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     if(!window.amap || !pluginStatus) {
       return;
     }
-    if(markerCenter) {
-      window.amap.remove(markerCenter);
+    if(markerCenterLayer) {
+      window.amap.remove(markerCenterLayer);
     }
     getLocationAsync({ 
       ['地址']: mapCenter,
@@ -120,7 +155,6 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     if (!pluginStatus || !recordsData  || !infoWindowListStatus) {
       return;
     }
-    console.log('设置');
     const infoWindow = new window.AMap.InfoWindow({
         content: '',  //传入 dom 对象，或者 html 字符串
         offset: new window.AMap.Pixel(0, -40),
@@ -142,7 +176,6 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     markerConfig: markConfig,
     informationRef?: any
   ) {
-    console.log('设置标点');
     if(!record.location) {
       return;
     }
@@ -190,12 +223,24 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
       return creatMarker(record, homeMarkerConfig, informationRef);
     });
     console.log('markers标点');
+    const cluster = new window.AMap.MarkerClusterer(window.amap, markers);
+    console.log(cluster);
     setMakerslayer(markers);
   }
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <div id="container" style={{ width: '100%', height: '100%' }}>
+          <div className={style.searchContent}>
+              <TextInput
+                className={style.searchInput}
+                placeholder="请输入内容"
+                size="small"
+                id="searchInput"
+                value={searchKey}
+                onChange={ e => setSearchKey(e.target.value)}
+              />
+          </div>
       </div>
       <Information 
         ref={informationRef}

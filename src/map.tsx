@@ -13,6 +13,7 @@ declare global {
     Transfer: any, // 路线规划
     amap: any, // 地图实例
     infoWindow: any, // 信息弹窗实例
+    AutoComplete: any
   }
 }
 
@@ -54,6 +55,15 @@ export const MapComponent: React.FC = () => {
     window.Geocoder = new window.AMap.Geocoder({
       city: '全国'
     });
+
+    const autoOptions = {
+      // 城市，默认全国 
+      city: "全国",
+      // 使用联想输入的input的id
+      input: "searchInput"
+    }
+
+    window.AutoComplete = new window.AMap.AutoComplete(autoOptions);
   }
 
   // 组件初始化时，加载 sdk 地图实例
@@ -66,7 +76,15 @@ export const MapComponent: React.FC = () => {
     AMapLoader.load({
       "key": apiKey,
       "version": "2.0",
-      "plugins":['AMap.Geocoder', "AMap.Transfer", "AMap.ToolBar", "AMap.HawkEye"],
+      "plugins":[
+        'AMap.Geocoder', 
+        "AMap.Transfer", 
+        "AMap.ToolBar", 
+        "AMap.HawkEye",
+        "AMap.AutoComplete",
+        "AMap.PlaceSearch",
+        "AMap.MarkerClusterer"
+      ],
       "AMapUI": {             // 是否加载 AMapUI，缺省不加载
           "version": '1.1',   // AMapUI 版本
           "plugins":['overlay/SimpleMarker'],       // 需要加载的 AMapUI ui插件

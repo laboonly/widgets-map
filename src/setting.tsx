@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { useSettingsButton, useCloudStorage, ViewPicker, FieldPicker, useFields } from '@vikadata/widget-sdk';
+import { useSettingsButton, useCloudStorage, ViewPicker, FieldPicker, useFields,  } from '@vikadata/widget-sdk';
 import { Box, TextInput, Button } from '@vikadata/components';
 import style from './setting.module.css';
 
@@ -20,8 +20,6 @@ export const Setting: React.FC = () => {
   // function confirmCenter() {
   //   setMapcenter(inputCenter); 
   // }
-
-  
 
   const [infoWindowList, setInfoWindowList] = useCloudStorage<Array<InfolistType>>('infoWindowList', [{ text: '地址', value: ''}, { text: '名称', value: '' }]);
 

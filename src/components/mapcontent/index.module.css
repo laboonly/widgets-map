@@ -1,0 +1,11 @@
+.searchContent {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  z-index: 99;
+}
+
+.searchInput {
+  background-color: #fff;
+  border: 1px solid #C9C9C9;
+}
