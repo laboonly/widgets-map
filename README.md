@@ -6,7 +6,7 @@
 > 已实现 添加标点以及对应的信息弹窗。
 
 ## 项目地址
-https://github.com/laboonly/widgets-rent-map
+https://github.com/laboonly/widgets-map
 
 ## 功能介绍
 本小程序根据表格里面的地址在地图上显示对应的地点与详细信息。
