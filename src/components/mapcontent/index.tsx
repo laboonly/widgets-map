@@ -104,7 +104,7 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
       pre[current.text] = current.value
       return pre;
     });
-    console.log('infoListObj---->', infoListObj);
+    
     // 获取表格所有地址
     const recordsData: any[] = records
       .map(record => {
@@ -115,7 +115,7 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
         }
         return resObj;
       });
-    console.log('recordsData----->', recordsData);
+    
     setRecordsdata(recordsData);
   },[records, infoWindowListStatus, infoWindowList]);
 
@@ -131,7 +131,6 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
  
   // 根据表格设置所有地图点
   useEffect(function drawAddress() {
-    console.log('infoWindowListStatus', infoWindowListStatus, pluginStatus, recordsData);
     if (!pluginStatus || !recordsData  || !infoWindowListStatus) {
       return;
     }
@@ -178,7 +177,7 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     markersLayer: Array<any>,
     expandRecord: (expandRecordParams: IExpandRecord) => void
   ) {
-      console.log('markAddress执行', recordsData, addressType);
+      
 
       if(markersLayer) {
         window.amap.remove(markersLayer);
@@ -192,7 +191,7 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
       } else if(addressType === 'latlng') {
         recordsRes = recordsData.map( record => {
           const lonlat = record['地址'] ? record['地址'].split(',') : '';
-          console.log('lonlat', lonlat);
+          
           let location;
           try {
             location = lonlat !== '' ? new window.AMap.LngLat(lonlat[0], lonlat[1]) : null;
@@ -206,11 +205,11 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
           }
       });
     }
-    console.log('records----->', recordsRes);
+    
     const markers = recordsRes && recordsRes.map((record: any) => { 
       return creatMarker(expandRecord, record, homeMarkerConfig);
     }).filter(x => x);
-    console.log('markers标点', markers);
+    
     const cluster = new window.AMap.MarkerClusterer(window.amap, markers);
     console.log(cluster);
     setMakerslayer(markers);

@@ -46,7 +46,6 @@ export const Setting: React.FC = () => {
         check = false;
       }
     });
-    console.log('check---->', check, infoWindowList);
     setInfoWindowListStatus(check);
   }
 
