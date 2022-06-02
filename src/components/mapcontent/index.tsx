@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useCloudStorage, useRecords } from '@vikadata/widget-sdk';
-import { Information } from '../information';
-import { getLocationAsync, creatTransfer } from '../../utils/common';
-import { useDebounce, useMount } from 'ahooks';
+import { useCloudStorage, useRecords, useExpandRecord, IExpandRecord } from '@vikadata/widget-sdk';
+import { getLocationAsync } from '../../utils/common';
+import { useDebounce } from 'ahooks';
 import { TextInput } from '@vikadata/components';
 import style from './index.module.css';
 
@@ -47,37 +46,23 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
   const records = useRecords(viewId);
   // 处理完的表格信息
   const [recordsData, setRecordsdata] = useState<any>();
+  const expandRecord = useExpandRecord();
 
   const [infoWindowList] = useCloudStorage<Array<InfolistType>>('infoWindowList');
   const [infoWindowListStatus] = useCloudStorage<boolean>('infoWindowListStatus');
-
-  // 地图中心地址
-  const [mapCenter] = useCloudStorage<string>('mapCenter');
-  // 地图中心定位
-  const [mapCenterLocation, setMapCenterLocation] = useState<locationType>();
+  
   // 中心标点
   const [markerCenterLayer, setMarkerCenterLayer] = useState<any>();
   // 地图标点集合
   const [markersLayer, setMakerslayer] = useState<any>(null);
-  // 信息窗口DOM引用
-  const informationRef = React.useRef();
-  // 点位信息
-  const [markInfo, setMarkInfo] = useState<any>();
+
   // 搜索输入
   const [searchKey, setSearchKey] = useState<string>();
   const debouncedSearchKey = useDebounce(searchKey, { wait: 500 });
 
-  // 搜索处理
-  // useEffect(() => {
-    
-  //   // 根据关键字进行搜索
-  //   window.AutoComplete.search(debouncedSearchKey, function(status, result) {
-  //     // 搜索成功时，result即是对应的匹配数据
-  //     console.log('result', result);
-  //   });
-    
-  // }, [debouncedSearchKey]);
-
+  // 地址类型
+  const [addressType] = useCloudStorage<string | number>('addressType', 'text');
+  
   useEffect(() => {
     if(!window.AutoComplete) {
       return;
@@ -119,15 +104,18 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
       pre[current.text] = current.value
       return pre;
     });
+    console.log('infoListObj---->', infoListObj);
     // 获取表格所有地址
     const recordsData: any[] = records
       .map(record => {
         let resObj = {}
         for(let key in infoListObj) {
-          resObj[key] = record.getCellValue(infoListObj[key]);
+          resObj[key] = record.getCellValueString(infoListObj[key]) || '';
+          resObj['id'] = record.id
         }
         return resObj;
       });
+    console.log('recordsData----->', recordsData);
     setRecordsdata(recordsData);
   },[records, infoWindowListStatus, infoWindowList]);
 
@@ -138,63 +126,43 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
     }
     if(markerCenterLayer) {
       window.amap.remove(markerCenterLayer);
-    }
-    getLocationAsync({ 
-      ['地址']: mapCenter,
-    }).then((record: any )=> {
-      window.amap.setCenter([record.location.lng, record.location.lat]);
-      setMapCenterLocation(record.location);
-      //创建中心点标点 并且设置
-      // setMarkercenter(creatMarker(record, conterMarkerConfig));
-    });   
-  },[window.amap, mapCenter, pluginStatus]);
+    } 
+  },[window.amap, pluginStatus]);
  
   // 根据表格设置所有地图点
   useEffect(function drawAddress() {
-    console.log('infoWindowListStatus', infoWindowListStatus, pluginStatus, recordsData, mapCenterLocation);
+    console.log('infoWindowListStatus', infoWindowListStatus, pluginStatus, recordsData);
     if (!pluginStatus || !recordsData  || !infoWindowListStatus) {
       return;
     }
-    const infoWindow = new window.AMap.InfoWindow({
-        content: '',  //传入 dom 对象，或者 html 字符串
-        offset: new window.AMap.Pixel(0, -40),
-        closeWhenClickMap: true, // 点击地图关闭
-        autoMove: true
-    });
-    window.infoWindow = infoWindow;
-    markAddress(recordsData, markersLayer, informationRef);
+    markAddress(recordsData, markersLayer, expandRecord);
   }, [recordsData, pluginStatus, infoWindowListStatus]);
 
   /* 创建标记点 
   record: 标点信息
   markerConfig: 标点参数配置
   transfer: 创建路径对象
-  informationRef: 信息窗体DOM引用
   */
   function creatMarker(
+    expandRecord: (expandRecordParams: IExpandRecord) => void,
     record: any, 
     markerConfig: markConfig,
-    informationRef?: any
   ) {
     if(!record.location) {
       return;
     }
     const marker =  new window.AMapUI.SimpleMarker({
       ...markerConfig,
+      title: record['名称'],
       //...其他Marker选项...，不包括content
       map: window.amap,
       clickable: true,
       position: [record.location.lng, record.location.lat]
     });
     
-    
+
     marker.on('click', () => {
-      setMarkInfo(record);
-      setTimeout(() => {
-      window.infoWindow.setContent(informationRef.current.innerHTML);
-      // creatTransfer([record.location.lng, record.location.lat], [mapCenterLocation.lng, mapCenterLocation.lat]);
-      window.infoWindow.open(window.amap, [record.location.lng, record.location.lat]);
-      });
+      expandRecord({recordIds: [record.id]});
     });
     
     return marker;
@@ -203,26 +171,46 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
   /* 根据地址搜索增加marker点 
   recordsData: 表格数据
   markersLayer: 之前已经创建的marker图层
-  setHouseinfo: 设置标点信息函数
-  mapCenterLocation: 中心点坐标
-  informationRef: 信息窗口DOM
+  expandRecord: 展开卡片函数
   */
   async function markAddress( 
     recordsData: Array<any>, 
-    markersLayer: Array<any>, 
-    informationRef: any
+    markersLayer: Array<any>,
+    expandRecord: (expandRecordParams: IExpandRecord) => void
   ) {
-    console.log('markAddress执行');
-    if(markersLayer) {
-      window.amap.remove(markersLayer);
+      console.log('markAddress执行', recordsData, addressType);
+
+      if(markersLayer) {
+        window.amap.remove(markersLayer);
+      }
+      let recordsRes;
+      
+
+      if(addressType === 'text') {
+        const asyncRecords = recordsData.map(record => getLocationAsync(record));
+        recordsRes = await Promise.all(asyncRecords);
+      } else if(addressType === 'latlng') {
+        recordsRes = recordsData.map( record => {
+          const lonlat = record['地址'] ? record['地址'].split(',') : '';
+          console.log('lonlat', lonlat);
+          let location;
+          try {
+            location = lonlat !== '' ? new window.AMap.LngLat(lonlat[0], lonlat[1]) : null;
+          } catch(e) {
+            location = null
+            console.log(e)
+          }
+          return {
+            location,
+            ...record,
+          }
+      });
     }
-    
-    const asyncRecords = recordsData.map(record => getLocationAsync(record));
-    const Records = await Promise.all(asyncRecords);
-    const markers = Records.map((record: any) => { 
-      return creatMarker(record, homeMarkerConfig, informationRef);
-    });
-    console.log('markers标点');
+    console.log('records----->', recordsRes);
+    const markers = recordsRes && recordsRes.map((record: any) => { 
+      return creatMarker(expandRecord, record, homeMarkerConfig);
+    }).filter(x => x);
+    console.log('markers标点', markers);
     const cluster = new window.AMap.MarkerClusterer(window.amap, markers);
     console.log(cluster);
     setMakerslayer(markers);
@@ -242,10 +230,6 @@ export const MapContent: React.FC<mapContentProps> = ({ pluginStatus  }) => {
               />
           </div>
       </div>
-      <Information 
-        ref={informationRef}
-        info={markInfo}
-      />
     </div>
   );
 }

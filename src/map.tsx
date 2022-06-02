@@ -32,10 +32,9 @@ export const MapComponent: React.FC = () => {
   const [pluginStatus, setPluginstatus] = useState(false);
 
   function initMap() {
-    const lnglat = new window.AMap.LngLat(114.031040, 22.624386);
+    
     const amap = new window.AMap.Map('container', {
       zoom: 12,//级别
-      center: lnglat,//中心点坐标
       viewMode: '2D',//使用3D视图
       mapStyle: 'amap://styles/b379277160c9c3ce520627ad2e4bd22c'
     });
@@ -45,7 +44,7 @@ export const MapComponent: React.FC = () => {
     window.amap = amap;
     window.Transfer = new window.AMap.Transfer({
       // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
-      city: '深圳',
+      city: '全国',
       map: amap,
       hideMarkers: true,
       extensions: 'all',
